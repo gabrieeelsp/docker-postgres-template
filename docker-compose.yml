@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+    postgres:
+        image: postgres:16.1-bullseye
+        restart: always
+        #ports:
+        #    - 5432:5432
+        environment:
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_USER: ${POSTGRES_USER}
+        volumes:
+            - ./data:/var/lib/postgresql/data
+        networks:
+            network_postgres:
+    
+    pgadmin:
+        image: dpage/pgadmin4
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+        ports:
+            - ${PGADMIN_PORT_EXT}:80
+        depends_on:
+            - postgres
+        volumes:
+            - pgadmin-data:/var/lib/pgadmin
+        networks:
+            network_postgres:
+
+volumes:
+    pgadmin-data:
+
+networks:
+    network_postgres:
